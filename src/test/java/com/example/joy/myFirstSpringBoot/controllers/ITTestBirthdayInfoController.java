@@ -14,6 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,9 +28,7 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import com.example.joy.myFirstSpringBoot.SpringBootRestApiApplication;
 import com.example.joy.myFirstSpringBoot.services.BasicBirthdayService;
 
-//@ContextConfiguration(classes = { ITTestBirthdayInfoController.TestResourceServerConfiguration.class,
-//		SpringBootRestApiApplication.class })
-@ContextConfiguration(classes = { 
+@ContextConfiguration(classes = { ITTestBirthdayInfoController.TestResourceServerConfiguration.class,
 		SpringBootRestApiApplication.class })
 @AutoConfigureMockMvc
 @WebMvcTest(controllers= {BirthdayInfoController.class,BasicBirthdayService.class})
@@ -123,7 +124,7 @@ class ITTestBirthdayInfoController {
 	public static RequestPostProcessor security() {
         return SecurityMockMvcRequestPostProcessors.securityContext(SecurityContextHolder.getContext());
 }
-/*
+
 	@EnableResourceServer
 	public static class TestResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 		@Override
@@ -131,5 +132,5 @@ class ITTestBirthdayInfoController {
 			security.stateless(false);
 		}
 	}
-	*/
+	
 }
