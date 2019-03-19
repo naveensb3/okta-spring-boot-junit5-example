@@ -1,34 +1,34 @@
 package com.example.joy.myFirstSpringBoot.services;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.stereotype.Service;
-import com.example.joy.myFirstSpringBoot.beans.Birthday;
 
 
 @Service
 public class BasicBirthdayService implements IBirthdayService{
+	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");	
+	
 	@Override
-	public void checkBirthdayIsValid(Birthday bd) {
-		if (bd == null) {     
+	public LocalDate getValidBirthday(String isoString) {
+		if (isoString ==null) {     
 			throw new RuntimeException("Must include birthday");
 		}
-		if (bd.getDay() < 1 || bd.getDay() > 31 || (bd.getMonth() == 2 && bd.getDay() > 29) || (
-				bd.getDay()>28 && bd.getMonth()==2 && (bd.getFourDigitYear()%4 >0 ||bd.getFourDigitYear() %400==0))
-				|| ((bd.getMonth() == 4 | bd.getMonth() == 6 || bd.getMonth() == 9 || bd.getMonth() == 11)
-						&& bd.getDay() > 30)) {
-			throw new RuntimeException("Invalid Day");
+		try {
+			LocalDate birthdate = LocalDate.parse(isoString, formatter);
+			return birthdate;
+		}catch(Exception e ) {
+			throw new RuntimeException("Must include valid birthday in yyyy-MM-dd format");
 		}
-		if (bd.getMonth()<1 || bd.getMonth()>12) {
-			throw new RuntimeException("Invalid Year");
-		}
+		
 	}
 	@Override
-	public String getBirthDOW(Birthday bd) {
-		LocalDate d = bd.getBirthDate();
-		return d.getDayOfWeek().toString();
+	public String getBirthDOW(LocalDate bd) {
+		return bd.getDayOfWeek().toString();
 	}
 	@Override
-	public String getChineseZodiac(Birthday bd) {
-		int year = bd.getFourDigitYear();
+	public String getChineseZodiac(LocalDate bd) {
+		int year = bd.getYear();
 		switch (year % 12) {
 		case 0:
 			return "Monkey";
@@ -60,9 +60,9 @@ public class BasicBirthdayService implements IBirthdayService{
 
 	}
 	@Override
-	public  String getStarSign(Birthday bd) {
-		int day = bd.getDay();
-		int month = bd.getMonth();
+	public  String getStarSign(LocalDate bd) {
+		int day = bd.getDayOfMonth();
+		int month = bd.getMonthValue();
 
 		if (month==12 && day >=22 || month==1 && day < 20) {
 			return "Capricorn";

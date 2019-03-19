@@ -5,40 +5,39 @@ import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
 import com.example.joy.myFirstSpringBoot.SpringBootRestApiApplication;
-import com.example.joy.myFirstSpringBoot.beans.Birthday;
-import com.example.joy.myFirstSpringBoot.beans.BirthdayChineseZodiac;
-import com.example.joy.myFirstSpringBoot.beans.BirthdayDOW;
-import com.example.joy.myFirstSpringBoot.beans.BirthdayStarSign;
 import com.example.joy.myFirstSpringBoot.services.BasicBirthdayService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ContextConfiguration(classes = { ITTestBirthdayInfoController.TestResourceServerConfiguration.class,
+//@ContextConfiguration(classes = { ITTestBirthdayInfoController.TestResourceServerConfiguration.class,
+//		SpringBootRestApiApplication.class })
+@ContextConfiguration(classes = { 
 		SpringBootRestApiApplication.class })
 @AutoConfigureMockMvc
 @WebMvcTest(controllers= {BirthdayInfoController.class,BasicBirthdayService.class})
 class ITTestBirthdayInfoController {
 	private final static String TEST_USER_ID = "user-id-123";
-	private static ObjectMapper mapper = new ObjectMapper();
-	String bd1 = getJSONString(new Birthday(1979,7,14));
-	String bd2 = getJSONString(new Birthday(2018,1,23));
-	String bd3 = getJSONString(new Birthday(1972, 3, 17));
-	String bd4 = getJSONString(new Birthday(1945, 12, 2));
-	String bd5 = getJSONString(new Birthday(2003, 8, 4));
+	String bd1 = LocalDate.of(1979,7,14).format(DateTimeFormatter.ISO_DATE);
+	String bd2 = LocalDate.of(2018,1,23).format(DateTimeFormatter.ISO_DATE);
+	String bd3 = LocalDate.of(1972, 3, 17).format(DateTimeFormatter.ISO_DATE);
+	String bd4 = LocalDate.of(1945, 12, 2).format(DateTimeFormatter.ISO_DATE);
+	String bd5 = LocalDate.of(2003, 8, 4).format(DateTimeFormatter.ISO_DATE);
     @Autowired
 	private  MockMvc mockMvc;
 
@@ -77,14 +76,14 @@ class ITTestBirthdayInfoController {
 	private void testDOW(String birthday, String dow) {
 		MvcResult result;
 		try {
-			result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/dayOfWeek").content(birthday)
+			result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/dayOfWeek").with(security()).content(birthday)
 					.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
 			 		.andReturn();
 			
-			BirthdayDOW resultDOW = mapper.readValue(result.getResponse().getContentAsString(),BirthdayDOW.class);
+			String resultDOW = result.getResponse().getContentAsString();
 	        assertNotNull(resultDOW);
-	        assertEquals(dow, resultDOW.getDayOfWeek());
+	        assertEquals(dow, resultDOW);
 		} catch (Exception e) {
 			fail();
 		}
@@ -93,14 +92,14 @@ class ITTestBirthdayInfoController {
 	private void testZodiak(String birthday, String czs) {
 		MvcResult result;
 		try {
-			result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/chineseZodiac").content(birthday)
+			result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/chineseZodiac").with(security()).content(birthday)
 					.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
 			 		.andReturn();
 			
-			BirthdayChineseZodiac resultCZ = mapper.readValue(result.getResponse().getContentAsString(),BirthdayChineseZodiac.class);
+			String resultCZ =result.getResponse().getContentAsString();
 	        assertNotNull(resultCZ);
-	        assertEquals(czs, resultCZ.getChineseZodiacSign());
+	        assertEquals(czs, resultCZ);
 		} catch (Exception e) {
 			fail();
 		}
@@ -109,27 +108,22 @@ class ITTestBirthdayInfoController {
 	private void testStarSign(String birthday, String ss) {
 		MvcResult result;
 		try {
-			result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/starSign").content(birthday)
+			result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/starSign").with(security()).content(birthday)
 					.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk())
 			 		.andReturn();
 			
-			BirthdayStarSign resultSS = mapper.readValue(result.getResponse().getContentAsString(),BirthdayStarSign.class);
+			 String resultSS = result.getResponse().getContentAsString();
 	        assertNotNull(resultSS);
-	        assertEquals(ss, resultSS.getStarSign());
+	        assertEquals(ss, resultSS);
 		} catch (Exception e) {
 			fail();
 		}
 	}
-	
-	public static String getJSONString(final Object obj) {
-		try {
-			return mapper.writeValueAsString(obj);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
+	public static RequestPostProcessor security() {
+        return SecurityMockMvcRequestPostProcessors.securityContext(SecurityContextHolder.getContext());
+}
+/*
 	@EnableResourceServer
 	public static class TestResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 		@Override
@@ -137,4 +131,5 @@ class ITTestBirthdayInfoController {
 			security.stateless(false);
 		}
 	}
+	*/
 }
