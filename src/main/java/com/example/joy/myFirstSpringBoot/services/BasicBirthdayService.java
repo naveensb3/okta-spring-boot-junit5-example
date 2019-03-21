@@ -10,12 +10,12 @@ public class BasicBirthdayService implements IBirthdayService{
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");	
 	
 	@Override
-	public LocalDate getValidBirthday(String isoString) {
-		if (isoString ==null) {     
+	public LocalDate getValidBirthday(String birthdayString) {
+		if (birthdayString ==null) {     
 			throw new RuntimeException("Must include birthday");
 		}
 		try {
-			LocalDate birthdate = LocalDate.parse(isoString, formatter);
+			LocalDate birthdate = LocalDate.parse(birthdayString, formatter);
 			return birthdate;
 		}catch(Exception e ) {
 			throw new RuntimeException("Must include valid birthday in yyyy-MM-dd format");
@@ -23,12 +23,12 @@ public class BasicBirthdayService implements IBirthdayService{
 		
 	}
 	@Override
-	public String getBirthDOW(LocalDate bd) {
-		return bd.getDayOfWeek().toString();
+	public String getBirthDOW(LocalDate birthday) {
+		return birthday.getDayOfWeek().toString();
 	}
 	@Override
-	public String getChineseZodiac(LocalDate bd) {
-		int year = bd.getYear();
+	public String getChineseZodiac(LocalDate birthday) {
+		int year = birthday.getYear();
 		switch (year % 12) {
 		case 0:
 			return "Monkey";
@@ -60,9 +60,9 @@ public class BasicBirthdayService implements IBirthdayService{
 
 	}
 	@Override
-	public  String getStarSign(LocalDate bd) {
-		int day = bd.getDayOfMonth();
-		int month = bd.getMonthValue();
+	public  String getStarSign(LocalDate birthday) {
+		int day = birthday.getDayOfMonth();
+		int month = birthday.getMonthValue();
 
 		if (month==12 && day >=22 || month==1 && day < 20) {
 			return "Capricorn";

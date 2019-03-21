@@ -5,15 +5,15 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.joy.myFirstSpringBoot.services.IBirthdayService;
 
-@Controller
+@RestController
 @RequestMapping("/birthday")
 public class BirthdayInfoController {
 	IBirthdayService birthdayService;
@@ -24,29 +24,29 @@ public class BirthdayInfoController {
 	}
 	
 	@PostMapping("/dayOfWeek")
-	public ResponseEntity<String> getDayOfWeek(@RequestBody String birthdayString) {
+	public String getDayOfWeek(@RequestBody String birthdayString) {
 		LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
 
 		String dow = birthdayService.getBirthDOW(birthday);
 		
-		return new ResponseEntity<String>(dow, HttpStatus.OK);
+		return dow;
 
 	}
 
 	@PostMapping("/chineseZodiac")
-	public ResponseEntity<String> getChineseZodiac(@RequestBody String birthdayString) {
+	public String getChineseZodiac(@RequestBody String birthdayString) {
 		LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
 		String sign = birthdayService.getChineseZodiac(birthday);
 		
-		return new ResponseEntity<String>(sign, HttpStatus.OK);
+		return sign;
 	}
 
 	@PostMapping("/starSign")
-	public ResponseEntity<String> getStarSign(@RequestBody  String birthdayString) {
+	public String getStarSign(@RequestBody  String birthdayString) {
 		LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
 		String sign = birthdayService.getStarSign(birthday);
 		
-		return new ResponseEntity<String>(sign, HttpStatus.OK);
+		return sign;
 	}
 	
 	@ExceptionHandler(RuntimeException.class)
