@@ -1,21 +1,19 @@
 package com.example.joy.myFirstSpringBoot.controllers;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.joy.myFirstSpringBoot.beans.Birthday;
-import com.example.joy.myFirstSpringBoot.beans.BirthdayChineseZodiac;
-import com.example.joy.myFirstSpringBoot.beans.BirthdayDOW;
-import com.example.joy.myFirstSpringBoot.beans.BirthdayStarSign;
 import com.example.joy.myFirstSpringBoot.services.IBirthdayService;
 
-@Controller
+@RestController
 @RequestMapping("/birthday")
 public class BirthdayInfoController {
 	IBirthdayService birthdayService;
@@ -26,32 +24,29 @@ public class BirthdayInfoController {
 	}
 	
 	@PostMapping("/dayOfWeek")
-	public ResponseEntity<BirthdayDOW> getDayOfWeek(@RequestBody Birthday bd) {
-		birthdayService.checkBirthdayIsValid(bd);
+	public String getDayOfWeek(@RequestBody String birthdayString) {
+		LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
 
-		String dow = birthdayService.getBirthDOW(bd);
-		BirthdayDOW bdow = new BirthdayDOW(bd, dow);
-
-		return new ResponseEntity<BirthdayDOW>(bdow, HttpStatus.OK);
+		String dow = birthdayService.getBirthDOW(birthday);
+		
+		return dow;
 
 	}
 
 	@PostMapping("/chineseZodiac")
-	public ResponseEntity<BirthdayChineseZodiac> getChineseZodiac(@RequestBody Birthday bd) {
-		birthdayService.checkBirthdayIsValid(bd);
-		String sign = birthdayService.getChineseZodiac(bd);
-		BirthdayChineseZodiac bsign = new BirthdayChineseZodiac(bd, sign);
-
-		return new ResponseEntity<BirthdayChineseZodiac>(bsign, HttpStatus.OK);
+	public String getChineseZodiac(@RequestBody String birthdayString) {
+		LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
+		String sign = birthdayService.getChineseZodiac(birthday);
+		
+		return sign;
 	}
 
 	@PostMapping("/starSign")
-	public ResponseEntity<BirthdayStarSign> getStarSign(@RequestBody Birthday bd) {
-		birthdayService.checkBirthdayIsValid(bd);
-		String sign = birthdayService.getStarSign(bd);
-		BirthdayStarSign bsign = new BirthdayStarSign(bd, sign);
-
-		return new ResponseEntity<BirthdayStarSign>(bsign, HttpStatus.OK);
+	public String getStarSign(@RequestBody  String birthdayString) {
+		LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
+		String sign = birthdayService.getStarSign(birthday);
+		
+		return sign;
 	}
 	
 	@ExceptionHandler(RuntimeException.class)

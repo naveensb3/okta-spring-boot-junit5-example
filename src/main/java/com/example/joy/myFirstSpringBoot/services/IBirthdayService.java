@@ -1,13 +1,13 @@
 package com.example.joy.myFirstSpringBoot.services;
 
-import com.example.joy.myFirstSpringBoot.beans.Birthday;
+import java.time.LocalDate;
 
 public interface IBirthdayService {
-	public void checkBirthdayIsValid(Birthday bd) ;
+	public LocalDate getValidBirthday(String birthdayString) ;
 	
-	public String getBirthDOW(Birthday bd);
+	public String getBirthDOW(LocalDate birthday);
 	
-	public String getChineseZodiac(Birthday bd);
+	public String getChineseZodiac(LocalDate birthday);
 
-	public  String getStarSign(Birthday bd) ;
+	public  String getStarSign(LocalDate birthday) ;
 }
