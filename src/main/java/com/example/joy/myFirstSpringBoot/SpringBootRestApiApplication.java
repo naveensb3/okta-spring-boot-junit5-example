@@ -9,18 +9,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @SpringBootApplication(scanBasePackages = { "com.example.joy" })
 public class SpringBootRestApiApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringBootRestApiApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootRestApiApplication.class, args);
 
-	}
+    }
 
-	@Configuration
-	static class OktaOAuth2WebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    @Configuration
+    static class OktaOAuth2WebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().anyRequest().authenticated().and().oauth2ResourceServer().jwt();
-		}
-	}
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.authorizeRequests().anyRequest().authenticated().and().oauth2ResourceServer().jwt();
+        }
+    }
 
 }
