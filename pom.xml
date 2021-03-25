@@ -11,7 +11,6 @@
     <artifactId>myFirstSpringBoot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-
     <properties>
         <java.version>1.8</java.version>
         <spring.boot.version>2.1.3.RELEASE</spring.boot.version>
@@ -27,10 +26,6 @@
         <!-- Rest API - end -->
 
         <!-- security - begin -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.okta.spring</groupId>
             <artifactId>okta-spring-boot-starter</artifactId>
