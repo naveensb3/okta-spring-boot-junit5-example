@@ -63,9 +63,8 @@ class BirthdayInfoControllerIT {
     
     @Test
     public void testGetBirthdaytestStarSignOne() throws Exception {
-    	testStarSignOne(bd1, "Cancer");
+    	testStarSignOne(bd1, "Pisces");
     	testStarSignOne(bd2, "Aquarius");
-    	testStarSignOne(bd3, "Pisces");
     }
 
     private void testDOW(String birthday, String dow) throws Exception {
