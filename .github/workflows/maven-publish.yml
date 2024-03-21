@@ -43,6 +43,11 @@ jobs:
           update-comment: true
           pass-emoji: ':green_circle:'
           fail-emoji: ':red_circle:'
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+            token: ${{ secrets.CODECOV_TOKEN }}
+            slug: naveensb3/okta-spring-boot-junit5-example
       - name: Save Coverage To Environment Variable
         run: |
           echo "TOTAL_COVERAGE=${{ steps.jacoco.outputs.coverage-overall }}" >> $GITHUB_ENV
