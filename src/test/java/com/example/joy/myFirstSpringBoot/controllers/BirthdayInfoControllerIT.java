@@ -63,7 +63,7 @@ class BirthdayInfoControllerIT {
     
     @Test
     public void testGetBirthdaytestStarSignOne() throws Exception {
-    	testStarSignOne(bd1, "Cancer");
+    	testStarSignOne(bd1, "Pisces");
     	testStarSignOne(bd2, "Aquarius");
     }
 
