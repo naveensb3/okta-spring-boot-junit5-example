@@ -50,4 +50,18 @@ class BasicBirthdayServiceTest {
         dow = birthdayService.getStarSign(LocalDate.of(2003, 8, 4));
         assertEquals("Leo", dow);
     }
+    
+    @Test
+    void testGetBirthdayStarSignOe() {
+        String dow = birthdayService.getStarSignOne(LocalDate.of(1979, 7, 14));
+        assertEquals("Cancer", dow);
+        dow = birthdayService.getStarSign(LocalDate.of(2018, 1, 23));
+        assertEquals("Aquarius", dow);
+        dow = birthdayService.getStarSign(LocalDate.of(1972, 3, 17));
+        assertEquals("Pisces", dow);
+        dow = birthdayService.getStarSign(LocalDate.of(1945, 12, 2));
+        assertEquals("Sagittarius", dow);
+        dow = birthdayService.getStarSign(LocalDate.of(2003, 8, 4));
+        assertEquals("Leo", dow);
+    }
 }

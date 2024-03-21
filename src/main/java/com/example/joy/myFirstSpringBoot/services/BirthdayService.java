@@ -10,4 +10,6 @@ public interface BirthdayService {
     String getChineseZodiac(LocalDate birthday);
 
     String getStarSign(LocalDate birthday) ;
+    
+    String getStarSignOne(LocalDate birthday) ;
 }
