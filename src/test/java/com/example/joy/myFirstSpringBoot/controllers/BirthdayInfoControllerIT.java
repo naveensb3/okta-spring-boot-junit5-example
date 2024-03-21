@@ -60,6 +60,12 @@ class BirthdayInfoControllerIT {
         testStarSign(bd4, "Sagittarius");
         testStarSign(bd5, "Leo");
     }
+    
+    @Test
+    public void testGetBirthdaytestStarSignOne() throws Exception {
+    	testStarSignOne(bd1, "Cancer");
+    	testStarSignOne(bd2, "Aquarius");
+    }
 
     private void testDOW(String birthday, String dow) throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/dayOfWeek")
@@ -93,6 +99,20 @@ class BirthdayInfoControllerIT {
 
     private void testStarSign(String birthday, String ss) throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/starSign")
+                .with(user(TEST_USER_ID))
+                .with(csrf())
+                .content(birthday)
+                .contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String resultSS = result.getResponse().getContentAsString();
+        assertNotNull(resultSS);
+        assertEquals(ss, resultSS);
+    }
+    
+    private void testStarSignOne(String birthday, String ss) throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/birthday/starSignOne")
                 .with(user(TEST_USER_ID))
                 .with(csrf())
                 .content(birthday)

@@ -37,6 +37,13 @@ public class BirthdayInfoController {
         String sign = birthdayService.getStarSign(birthday);
         return sign;
     }
+    
+    @PostMapping("/starSignOne")
+    public String getStarSignOne(@RequestBody String birthdayString) {
+        LocalDate birthday = birthdayService.getValidBirthday(birthdayString);
+        String sign = birthdayService.getStarSign(birthday);
+        return sign;
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public final ResponseEntity<Exception> handleAllExceptions(RuntimeException ex) {

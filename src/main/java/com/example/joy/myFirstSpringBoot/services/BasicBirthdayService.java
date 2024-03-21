@@ -94,4 +94,21 @@ public class BasicBirthdayService implements BirthdayService {
         }
         return "";
     }
+    
+    @Override
+    public String getStarSignOne(LocalDate birthday) {
+        int day = birthday.getDayOfMonth();
+        int month = birthday.getMonthValue();
+
+        if (month == 12 && day >= 22 || month == 1 && day < 20) {
+            return "Capricorn";
+        } else if (month == 1 && day >= 20 || month == 2 && day < 19) {
+            return "Aquarius";
+        } else if (month == 2 && day >= 19 || month == 3 && day < 21) {
+            return "Pisces";
+        } else if (month == 3 && day >= 21 || month == 4 && day < 20) {
+            return "Aries";
+        }
+        return "";
+    }
 }
