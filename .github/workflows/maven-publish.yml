@@ -6,6 +6,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,15 +35,51 @@ jobs:
             ${{ github.workspace }}/target/site/jacoco/jacoco.xml
             ${{ github.workspace }}/target/site/jacoco/index.html
        
-      - name: Add coverage to PR
-        id: jacoco
-        uses: madrapps/jacoco-report@v1.6.1
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
         with:
-          paths: ${{ github.workspace }}/target/site/jacoco/jacoco.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 80
-          min-coverage-changed-files: 60
-          title: '# :recycle: Coverage Report'
-          update-comment: true
-          pass-emoji: ':green_circle:'
-          fail-emoji: ':red_circle:'
+          jacoco-csv-file: target/site/jacoco/jacoco.csv
+          badges-directory: .github/badges
+          generate-coverage-badge: true
+          coverage-badge-filename: jacoco.svg
+          generate-branches-badge: false
+          branches-badge-filename: branches.svg
+          generate-coverage-endpoint: true
+          coverage-endpoint-filename: jacoco.json
+          generate-branches-endpoint: true
+          branches-endpoint-filename: branches.json
+          generate-summary: true
+          summary-filename: coverage-summary.json
+          coverage-label: coverage
+          branches-label: branches
+          colors: '#4c1 #97ca00 #a4a61d #dfb317 #fe7d37 #e05d44'
+          intervals: 100 90 80 70 60 0
+          on-missing-report: fail
+          fail-if-coverage-less-than: 0
+          fail-if-branches-less-than: 0
+          fail-on-coverage-decrease: false
+          fail-on-branches-decrease: false
+          generate-workflow-summary: true
+          workflow-summary-heading: JaCoCo Test Coverage Summary
+      - name: Upload Report
+        uses: 'actions/upload-artifact@v3'
+        with:
+          name: jacoco-report-badge
+          path: |
+            .github/badges/jacoco.svg
+            .github/badges/coverage-summary.json
+            .github/badges/jacoco.json
+            .github/badges/branches.json
+
+      - name: Comment on PR with coverage percentages
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          REPORT=$(<.github/badges/coverage-summary.json)
+          COVERAGE=$(jq -r '.coverage' <<< "$REPORT")%
+          BRANCHES=$(jq -r '.branches' <<< "$REPORT")%
+          NEWLINE=$'\n'
+          BODY="## JaCoCo Test Coverage Summary Statistics${NEWLINE}* __Coverage:__ ${COVERAGE}${NEWLINE}* __Branches:__ ${BRANCHES}"
+          gh pr comment ${{github.event.pull_request.number}} -b "${BODY}"
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
