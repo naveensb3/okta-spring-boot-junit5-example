@@ -63,14 +63,14 @@ jobs:
           name: jacoco-report-badge
           path: |
             .github/badges/jacoco.svg
-            coverage-summary.json
-            jacoco.json
-            branches.json
+            .github/badges/coverage-summary.json
+            .github/badges/jacoco.json
+            .github/badges/branches.json
 
       - name: Comment on PR with coverage percentages
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          REPORT=$(coverage-summary.json)
+          REPORT=$(.github/badges/coverage-summary.json)
           COVERAGE=$(jq -r '.coverage' <<< "$REPORT")%
           BRANCHES=$(jq -r '.branches' <<< "$REPORT")%
           NEWLINE=$'\n'
