@@ -44,7 +44,7 @@ jobs:
           coverage-endpoint-filename: jacoco.json
           generate-branches-endpoint: false
           branches-endpoint-filename: branches.json
-          generate-summary: false
+          generate-summary: true
           summary-filename: coverage-summary.json
           coverage-label: coverage
           branches-label: branches
